@@ -24,7 +24,12 @@ export default [
     ],
   },
   {
-    files: ["*.config.js", "*.config.ts", "server/**/*.config.ts"],
+    files: [
+      "*.config.js",
+      "*.config.ts",
+      "server/**/*.config.ts",
+      "server/prisma.config.ts",
+    ],
     languageOptions: {
       parser: tsParser,
       parserOptions: {

@@ -35,6 +35,9 @@ module.exports = {
     // subject 최대 길이
     'subject-max-length': [2, 'always', 50],
 
+    // Prisma, DB 등 고유명사 허용 (기본 subject-case 비활성화)
+    'subject-case': [0],
+
     // body 한 줄의 길이는 72자 이내
     'body-max-line-length': [2, 'always', 72],
   },

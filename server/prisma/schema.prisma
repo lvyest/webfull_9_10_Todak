@@ -1,20 +1,262 @@
 generator client {
-  provider = "prisma-client-js"
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
 }
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
+// ─── User ────────────────────────────────────────────────────
 model User {
-  id            String   @id @default(cuid())
-  githubId      Int      @unique
-  login         String
-  avatarUrl     String
-  accessToken   String?
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  id             String   @id @default(uuid())
+  githubId       String   @unique
+  githubUsername String
+  avatarUrl      String?
+  accessToken    String?
+  createdAt      DateTime @default(now())
+
+  roomMembers          RoomMember[]
+  privateRoomSessions  PrivateRoomSession[]
+  chatMessages         ChatMessage[]
+  hostedMeetings       Meeting[]            @relation("MeetingHost")
+  meetingParticipants  MeetingParticipant[]
+  minutes              Minutes[]
+  todos                Todo[]
+  notifications        Notification[]
 
   @@map("users")
+}
+
+// ─── Room ────────────────────────────────────────────────────
+model Room {
+  id          String     @id @default(uuid())
+  name        String
+  inviteCode  String     @unique
+  maxMembers  Int        @default(6)
+  status      RoomStatus @default(ACTIVE)
+  createdAt   DateTime   @default(now())
+
+  members      RoomMember[]
+  repos        Repo[]
+  privateRoom  PrivateRoom?
+  chatMessages ChatMessage[]
+  meetings     Meeting[]
+  minutes      Minutes[]
+  todos        Todo[]
+  notifications Notification[]
+
+  @@map("rooms")
+}
+
+enum RoomStatus {
+  ACTIVE
+  COMPLETED
+}
+
+// ─── RoomMember ──────────────────────────────────────────────
+model RoomMember {
+  id            String            @id @default(uuid())
+  roomId        String
+  userId        String
+  role          String?
+  characterType CharacterType?
+  nickname      String?
+  status        MemberStatus      @default(FOCUS)
+  posX          Int               @default(0)
+  posY          Int               @default(0)
+  joinedAt      DateTime          @default(now())
+
+  room Room @relation(fields: [roomId], references: [id])
+  user User @relation(fields: [userId], references: [id])
+
+  @@unique([roomId, userId])
+  @@map("room_members")
+}
+
+enum CharacterType {
+  CIRCLE
+  SQUARE
+  TRIANGLE
+  STAR
+  MOON
+  CLOUD
+}
+
+enum MemberStatus {
+  FOCUS
+  REST
+  MEETING
+  AWAY
+}
+
+// ─── Repo ────────────────────────────────────────────────────
+model Repo {
+  id            String   @id @default(uuid())
+  roomId        String
+  fullName      String
+  defaultBranch String   @default("main")
+  webhookId     String?
+  createdAt     DateTime @default(now())
+
+  room Room @relation(fields: [roomId], references: [id])
+
+  @@map("repos")
+}
+
+// ─── PrivateRoom ─────────────────────────────────────────────
+model PrivateRoom {
+  id        String   @id @default(uuid())
+  roomId    String   @unique
+  name      String   @default("회의실")
+  createdAt DateTime @default(now())
+
+  room     Room                 @relation(fields: [roomId], references: [id])
+  sessions PrivateRoomSession[]
+  messages ChatMessage[]
+  meetings Meeting[]
+
+  @@map("private_rooms")
+}
+
+// ─── PrivateRoomSession ──────────────────────────────────────
+model PrivateRoomSession {
+  id            String    @id @default(uuid())
+  privateRoomId String
+  userId        String
+  enteredAt     DateTime  @default(now())
+  leftAt        DateTime?
+
+  privateRoom PrivateRoom @relation(fields: [privateRoomId], references: [id])
+  user        User        @relation(fields: [userId], references: [id])
+
+  @@map("private_room_sessions")
+}
+
+// ─── ChatMessage ─────────────────────────────────────────────
+model ChatMessage {
+  id            String      @id @default(uuid())
+  roomId        String
+  privateRoomId String?
+  userId        String
+  content       String
+  type          MessageType @default(TEXT)
+  createdAt     DateTime    @default(now())
+
+  room        Room         @relation(fields: [roomId], references: [id])
+  privateRoom PrivateRoom? @relation(fields: [privateRoomId], references: [id])
+  user        User         @relation(fields: [userId], references: [id])
+
+  @@map("chat_messages")
+}
+
+enum MessageType {
+  TEXT
+  MEETING_START
+  MEETING_END
+}
+
+// ─── Meeting ─────────────────────────────────────────────────
+model Meeting {
+  id            String        @id @default(uuid())
+  roomId        String
+  privateRoomId String
+  hostId        String
+  status        MeetingStatus @default(ONGOING)
+  startedAt     DateTime      @default(now())
+  endedAt       DateTime?
+
+  room         Room                 @relation(fields: [roomId], references: [id])
+  privateRoom  PrivateRoom          @relation(fields: [privateRoomId], references: [id])
+  host         User                 @relation("MeetingHost", fields: [hostId], references: [id])
+  participants MeetingParticipant[]
+  minutes      Minutes[]
+
+  @@map("meetings")
+}
+
+enum MeetingStatus {
+  ONGOING
+  ENDED
+  CANCELLED
+}
+
+// ─── MeetingParticipant ──────────────────────────────────────
+model MeetingParticipant {
+  id        String    @id @default(uuid())
+  meetingId String
+  userId    String
+  joinedAt  DateTime  @default(now())
+  leftAt    DateTime?
+
+  meeting Meeting @relation(fields: [meetingId], references: [id])
+  user    User    @relation(fields: [userId], references: [id])
+
+  @@map("meeting_participants")
+}
+
+// ─── Minutes ─────────────────────────────────────────────────
+model Minutes {
+  id                 String        @id @default(uuid())
+  meetingId          String?       // null = 수동 작성
+  roomId             String
+  authorId           String
+  title              String
+  type               String
+  contentMd          String?
+  status             MinutesStatus @default(DRAFT)
+  linkedIssueNumbers Int[]
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
+
+  meeting Meeting? @relation(fields: [meetingId], references: [id])
+  room    Room     @relation(fields: [roomId], references: [id])
+  author  User     @relation(fields: [authorId], references: [id])
+
+  @@map("minutes")
+}
+
+enum MinutesStatus {
+  DRAFT
+  CONFIRMED
+}
+
+// ─── Todo ────────────────────────────────────────────────────
+model Todo {
+  id                String   @id @default(uuid())
+  roomId            String
+  userId            String
+  githubIssueNumber Int?     // null = 미발행 / not null = GitHub 이슈 연동됨
+  isDone            Boolean  @default(false)
+  date              DateTime @db.Date
+  createdAt         DateTime @default(now())
+
+  room Room @relation(fields: [roomId], references: [id])
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("todos")
+}
+
+// ─── Notification ────────────────────────────────────────────
+model Notification {
+  id        String           @id @default(uuid())
+  roomId    String
+  userId    String
+  type      NotificationType
+  message   String
+  link      String?
+  isRead    Boolean          @default(false)
+  createdAt DateTime         @default(now())
+
+  room Room @relation(fields: [roomId], references: [id])
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("notifications")
+}
+
+enum NotificationType {
+  PR_OPENED
+  PR_MERGED
+  MINUTES_GENERATED
+  NEW_ISSUE
 }

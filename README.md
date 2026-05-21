@@ -22,7 +22,7 @@
 ## 기술 스택 (server)
 
 - Node.js + Express + TypeScript
-- Socket.io, Prisma, BullMQ + Redis
+- Socket.io, **Prisma 7** (`prisma.config.ts` + `@prisma/adapter-pg`), BullMQ + Redis
 - Zod, zod-to-openapi
 - GitHub REST API, Anthropic API
 - pnpm 워크스페이스
@@ -31,7 +31,7 @@
 
 ### 요구 사항
 
-- Node.js >= 20
+- Node.js >= 20.19 (Prisma 7 권장: 22.x)
 - pnpm >= 9
 
 ### 설치
@@ -53,13 +53,18 @@ cp server/.env.example server/.env
 pnpm dev
 ```
 
-### DB (Prisma)
+### DB (Prisma 7)
+
+설정 파일: `server/prisma.config.ts` (DB URL), `server/prisma/schema.prisma` (모델)
 
 ```bash
-pnpm db:generate
-pnpm db:migrate
-# 또는 스키마만 반영: pnpm db:push
+pnpm db:generate   # Client 생성 → server/src/generated/prisma
+pnpm db:migrate    # 마이그레이션 (v7: seed는 자동 실행 안 됨)
+pnpm db:push       # 스키마만 반영
+# seed 사용 시: pnpm --filter todak-server exec prisma db seed
 ```
+
+Supabase: pooling URL로 앱 연결, `migrate` 오류 시 Direct URL을 `DATABASE_URL`에 잠시 사용하거나 `prisma.config.ts`에 분리 설정.
 
 ## 스크립트 (루트)
 
