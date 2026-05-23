@@ -8,8 +8,6 @@ import {
   signJwt,
   upsertUser,
 } from '../../services/auth.service.js';
-import { AuthenticatedRequest } from '../../types/index.js';
-
 export async function githubLogin(_req: Request, res: Response) {
   const params = new URLSearchParams({
     client_id: env.GITHUB_CLIENT_ID,
@@ -42,8 +40,4 @@ export async function githubCallback(req: Request, res: Response) {
 
 export async function logout(_req: Request, res: Response) {
   res.json({ success: true, message: '로그아웃 되었습니다.' });
-}
-
-export async function getMe(req: AuthenticatedRequest, res: Response) {
-  res.json({ success: true, data: req.user ?? null });
 }
