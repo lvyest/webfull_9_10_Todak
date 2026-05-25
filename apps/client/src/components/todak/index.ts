@@ -1,65 +1,40 @@
-export { TodakAvatar } from './avatar';
-export { TodakButton } from './button';
 export {
-  TodakCard,
-  TodakCardBody,
-  TodakCardFooter,
-  TodakCardHeader,
-} from './card';
-export { TodakChip } from './chip';
-export { TodakField, TodakInput, TodakSelect, TodakTextarea } from './form';
-export { TodakModal } from './modal';
-export { TodakSegmentedControl } from './segmented-control';
-export { TodakToast } from './toast';
-export type {
-  TodakAvatarColor,
-  TodakAvatarProps,
-  TodakAvatarRadius,
-  TodakAvatarSize,
-} from './avatar';
-export type {
-  TodakButtonColor,
-  TodakButtonProps,
-  TodakButtonRadius,
-  TodakButtonSize,
-  TodakButtonVariant,
-} from './button';
-export type {
-  TodakCardHeaderProps,
-  TodakCardPadding,
-  TodakCardProps,
-  TodakCardRadius,
-  TodakCardShadow,
-  TodakCardVariant,
-} from './card';
-export type {
-  TodakChipColor,
-  TodakChipProps,
-  TodakChipRadius,
-  TodakChipSize,
-  TodakChipVariant,
-} from './chip';
-export type {
-  TodakFieldProps,
-  TodakFieldRadius,
-  TodakFieldSize,
-  TodakFieldVariant,
-  TodakInputProps,
-  TodakSelectProps,
-  TodakTextareaProps,
-} from './form';
-export type {
+  TodakBody,
+  TodakCloseTrigger,
+  TodakFooter,
+  TodakHeader,
+  TodakHeading,
+  TodakIcon,
+  TodakModal,
   TodakModalBackdrop,
-  TodakModalPlacement,
-  TodakModalProps,
-  TodakModalScrollBehavior,
-  TodakModalSize,
+  TodakModalBody,
+  TodakModalCloseTrigger,
+  TodakModalContainer,
+  TodakModalDialog,
+  TodakModalFooter,
+  TodakModalHeader,
+  TodakModalHeading,
+  TodakModalIcon,
+  TodakModalRoot,
+  TodakModalTrigger,
+  TodakTrigger,
+  useTodakModal,
 } from './modal';
+
 export type {
-  TodakSegmentedColor,
-  TodakSegmentedControlItem,
-  TodakSegmentedControlProps,
-  TodakSegmentedRadius,
-  TodakSegmentedSize,
-  TodakSegmentedVariant,
-} from './segmented-control';
+  TodakModalBackdropProps,
+  TodakModalBodyProps,
+  TodakModalClassNames,
+  TodakModalCloseTriggerProps,
+  TodakModalContainerProps,
+  TodakModalDialogProps,
+  TodakModalFooterProps,
+  TodakModalHeaderProps,
+  TodakModalHeadingProps,
+  TodakModalIconProps,
+  TodakModalProps,
+  TodakModalRootProps,
+  TodakModalState,
+  TodakModalStateOptions,
+  TodakModalTriggerProps,
+} from './modal';
