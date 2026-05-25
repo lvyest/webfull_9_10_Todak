@@ -1,7 +1,7 @@
 import dotenv from 'dotenv';
 import { z } from 'zod';
 
-dotenv.config();
+dotenv.config({ override: true });
 
 const EnvSchema = z.object({
   NODE_ENV: z
@@ -23,6 +23,8 @@ const EnvSchema = z.object({
   JWT_EXPIRES_IN: z.string().default('7d'),
 
   CLIENT_URL: z.string().url().default('http://localhost:3000'),
+
+  WEBHOOK_SECRET: z.string().min(1),
 });
 
 const parsed = EnvSchema.safeParse(process.env);
