@@ -26,6 +26,71 @@
   --animate-todak-neon-red: todak-neon-red 2s infinite alternate;
 }
 
+@layer theme {
+  :root,
+  .todak,
+  [data-theme='todak'] {
+    color-scheme: light;
+
+    --white: #ffffff;
+    --black: #000000;
+    --snow: var(--color-todak-bg);
+    --eclipse: var(--color-todak-ink);
+
+    --border-width: 1px;
+    --field-border-width: 1px;
+    --disabled-opacity: 0.5;
+    --ring-offset-width: 2px;
+    --radius: 0.5rem;
+    --field-radius: 0.75rem;
+
+    --background: var(--color-todak-bg);
+    --foreground: var(--color-todak-ink);
+
+    --surface: var(--color-todak-surface);
+    --surface-foreground: var(--foreground);
+    --surface-secondary: #f8fafc;
+    --surface-secondary-foreground: var(--foreground);
+    --surface-tertiary: #f1f5f9;
+    --surface-tertiary-foreground: var(--foreground);
+
+    --overlay: var(--color-todak-surface);
+    --overlay-foreground: var(--foreground);
+    --muted: var(--color-todak-muted);
+
+    --default: #f3f4f6;
+    --default-foreground: var(--color-slateGray);
+
+    --accent: var(--color-todak-coral-500);
+    --accent-foreground: var(--white);
+
+    --success: #22c55e;
+    --success-foreground: var(--white);
+    --warning: #f59e0b;
+    --warning-foreground: var(--foreground);
+    --danger: #ef4444;
+    --danger-foreground: var(--white);
+
+    --segment: var(--surface);
+    --segment-foreground: var(--foreground);
+
+    --border: var(--color-todak-line);
+    --separator: var(--color-todak-line);
+    --focus: var(--accent);
+    --link: var(--accent);
+    --backdrop: rgb(0 0 0 / 50%);
+
+    --field-background: var(--surface);
+    --field-foreground: var(--foreground);
+    --field-placeholder: #94a3b8;
+    --field-border: var(--border);
+
+    --surface-shadow: var(--shadow-todak-soft);
+    --overlay-shadow: var(--shadow-todak-panel);
+    --field-shadow: 0 1px 2px rgb(15 23 42 / 4%);
+  }
+}
+
 @layer base {
   body {
     margin: 0;
